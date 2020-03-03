@@ -36,13 +36,13 @@ check_if_programs_exists () {
     fi
 
     # Check if samtools is installed.
-    if ! type samtools > /dev/null 2>&1 ; then
+    if ! type /shared/apps/samtools/bin/samtools > /dev/null 2>&1 ; then
         printf 'Error: "samtools" could not be found in PATH.\n';
         exit_code=2;
     fi
 
     # Check if samtools 1.10 or higher is installed (needs to have "-D STR:FILE" option).
-    if ! samtools view 2>&1 | grep -q -- '-D STR:FILE' ; then
+    if ! /shared/apps/samtools/bin/samtools view 2>&1 | grep -q -- '-D STR:FILE' ; then
         printf 'Error: The version of "samtools" should be 1.10 or higher.\n';
         exit_code=2;
     fi
@@ -98,7 +98,7 @@ filter_bam_file_for_popscle_dsc_pileup () {
     if [ "${barcodes_tsv_filename%.gz}".gz = "${barcodes_tsv_filename}" ] ; then
         # Barcodes file is compressed with gzip.
         bedtools merge -i "${vcf_filename}" \
-          | samtools view\
+          | /shared/apps/samtools/bin/samtools view\
                 -@ 8 \
                 -L - \
                 -D CB:<(zcat "${barcodes_tsv_filename}") \
@@ -112,7 +112,7 @@ filter_bam_file_for_popscle_dsc_pileup () {
     else
         # Barcodes file is uncompressed.
         bedtools merge -i "${vcf_filename}" \
-          | samtools view\
+          | /shared/apps/samtools/bin/samtools view\
                 -@ 8 \
                 -L - \
                 -D CB:"${barcodes_tsv_filename}" \
